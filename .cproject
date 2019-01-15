@@ -31,6 +31,8 @@
 								<option id="nvcc.compiler.compileroptions.2146733706" name="Preprocessor options (-Xcompiler)" superClass="nvcc.compiler.compileroptions" valueType="stringList">
 									<listOptionValue builtIn="false" value="-fopenmp"/>
 								</option>
+								<option id="nvcc.compiler.option.lineinfo.5186352" superClass="nvcc.compiler.option.lineinfo" value="true" valueType="boolean"/>
+								<option id="nvcc.compiler.option.gprof.1406011532" superClass="nvcc.compiler.option.gprof" value="true" valueType="boolean"/>
 								<inputType id="nvcc.compiler.input.cu.341625835" superClass="nvcc.compiler.input.cu"/>
 								<inputType id="nvcc.compiler.input.cpp.1694556751" superClass="nvcc.compiler.input.cpp"/>
 								<inputType id="nvcc.compiler.input.c.1158831306" superClass="nvcc.compiler.input.c"/>
@@ -58,6 +60,7 @@
 					<sass major="6" minor="1"/>
 					<ptx major="6" minor="1"/>
 				</executable>
+				<editor-arch major="6" minor="1"/>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
@@ -91,7 +94,7 @@
 								<option id="nvcc.compiler.compileroptions.1603318079" name="Preprocessor options (-Xcompiler)" superClass="nvcc.compiler.compileroptions" valueType="stringList">
 									<listOptionValue builtIn="false" value="-fopenmp"/>
 								</option>
-								<option id="nvcc.compiler.def.symbols.830697117" name="Defined symbols (-D)" superClass="nvcc.compiler.def.symbols" valueType="definedSymbols"/>
+								<option id="nvcc.compiler.def.symbols.830697117" name="Defined symbols (-D)" superClass="nvcc.compiler.def.symbols"/>
 								<inputType id="nvcc.compiler.input.cu.1617724248" superClass="nvcc.compiler.input.cu"/>
 								<inputType id="nvcc.compiler.input.cpp.1342561652" superClass="nvcc.compiler.input.cpp"/>
 								<inputType id="nvcc.compiler.input.c.2078623263" superClass="nvcc.compiler.input.c"/>
@@ -101,8 +104,8 @@
 									<listOptionValue builtIn="false" value="opencv_videostab -lopencv_superres -lopencv_cudaoptflow -lopencv_cudabgsegm -lopencv_cudacodec -lopencv_cudastereo -lopencv_stitching -lopencv_cudafeatures2d -lopencv_cudaobjdetect -lopencv_cudalegacy -lopencv_cudawarping -lopencv_freetype -lopencv_dnn_objdetect -lopencv_fuzzy -lopencv_face -lopencv_photo -lopencv_cudaimgproc -lopencv_cudafilters -lopencv_stereo -lopencv_hfs -lopencv_xphoto -lopencv_rgbd -lopencv_optflow -lopencv_ximgproc -lopencv_bgsegm -lopencv_bioinspired -lopencv_structured_light -lopencv_ccalib -lopencv_hdf -lopencv_tracking -lopencv_datasets -lopencv_surface_matching -lopencv_saliency -lopencv_xfeatures2d -lopencv_shape -lopencv_video -lopencv_cudaarithm -lopencv_xobjdetect -lopencv_dpm -lopencv_objdetect -lopencv_aruco -lopencv_calib3d -lopencv_line_descriptor -lopencv_plot -lopencv_img_hash -lopencv_reg -lopencv_phase_unwrapping -lopencv_text -lopencv_features2d -lopencv_highgui -lopencv_videoio -lopencv_imgcodecs -lopencv_dnn -lopencv_ml -lopencv_imgproc -lopencv_flann -lopencv_core -lopencv_cudev"/>
 									<listOptionValue builtIn="false" value="gomp"/>
 								</option>
-								<option id="nvcc.linker.option.userobjs.2126637729" name="Other objects" superClass="nvcc.linker.option.userobjs" valueType="userObjs"/>
-								<option id="nvcc.linker.option.other.375051091" name="Other options (-Xlinker [option])" superClass="nvcc.linker.option.other" valueType="stringList"/>
+								<option id="nvcc.linker.option.userobjs.2126637729" name="Other objects" superClass="nvcc.linker.option.userobjs"/>
+								<option id="nvcc.linker.option.other.375051091" name="Other options (-Xlinker [option])" superClass="nvcc.linker.option.other"/>
 								<option id="nvcc.linker.option.shared.1143638857" name="Shared (-shared)" superClass="nvcc.linker.option.shared" value="false" valueType="boolean"/>
 								<option id="nvcc.linker.option.linkgl.1291437458" name="Link with OpenGL libraries" superClass="nvcc.linker.option.linkgl" value="false" valueType="boolean"/>
 								<inputType id="nvcc.linker.input.45761738" superClass="nvcc.linker.input">

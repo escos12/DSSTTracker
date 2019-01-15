@@ -401,6 +401,7 @@ std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &featu
 	std::vector<std::thread> threads;
 	std::vector<Mat> hogFeatures, colorFeatures, rgbFeatures;
 
+
 	if (params.use_hog) {
 		threads.push_back(std::thread(get_features_hog, patch, cell_size, std::ref(hogFeatures)));
 	}
@@ -410,6 +411,7 @@ std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &featu
 	if(params.use_rgb) {
 		threads.push_back(std::thread(get_features_rgb, patch, feature_size, std::ref(rgbFeatures)));
 	}
+
 	if(params.use_gray) {
 		Mat gray_m;
 		cvtColor(patch, gray_m, COLOR_BGR2GRAY);

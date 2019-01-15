@@ -17,7 +17,7 @@ public:
     bool use_channel_weights = true;
     bool use_segmentation = true;
     bool use_hog = true;
-    bool use_color_names = true;
+    bool use_color_names = false;
     bool use_gray = true;
     bool use_rgb = true;
 

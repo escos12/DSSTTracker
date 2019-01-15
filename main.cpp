@@ -27,9 +27,6 @@ std::vector<cv::Rect2d> parseCoorf(String filename)
 	// read until you reach the end of the file
 	for (std::string line; std::getline(read, line); )
 	{
-		std::cout << "line" << std::endl;
-
-		std::cout << line << std::endl;
 		std::stringstream ss(line);
 		std::string token;
 
@@ -53,50 +50,49 @@ std::vector<cv::Rect2d> parseCoorf(String filename)
 
 int main(int argc, char **argv)
 {
-
-	String seqense("bike1");
-	std::vector<cv::Rect2d> pos =  parseCoorf("home/nvidia/Videos/Data/"+ seqense + ".txt");
-	//Rect2d obj = pos[0];
-	Rect2d obj(703,361,64,96);
+	String seqense = "bike1";
+	std::vector<cv::Rect2d> pos =  parseCoorf("/home/nvidia/Videos/Data/" + seqense + ".txt");
+	Rect2d obj = pos[0];
+	//Rect2d obj(703,361,64,96);
 	TrackerCSRT tracker;
 	int counter = 1;
-	//cv::Mat input = cv::imread("home\nvidia\Videos/Data/"+ seqense + "/" + ZeroPadNumber(counter, 6) + ".jpg", 1);
-	cv::Mat in(768, 1024, CV_8UC3, Scalar(255,0,0));
-	rectangle(in, Rect2d(703-35,361-40,64,96), Scalar(0, 0, 255), 5, 8, 0);
-	rectangle(in, Rect2d(703+35,361+40,64,96), Scalar(0, 0, 255), 5, 8, 0);
+	cv::Mat in = cv::imread("/home/nvidia/Videos/Data/"+ seqense + "/" + ZeroPadNumber(counter, 6) + ".jpg", 1);
+	//cv::Mat in(768, 1024, CV_8UC3, Scalar(255,0,0));
 	tracker.initImpl(in, obj);
 
 	//cv::imshow("input", input);
-	cv::waitKey(0);
+	//cv::waitKey(0);
+
+	/*
+	    Mat inn = imread("/home/nvidia/Videos/Data/bike1/000001.jpg", 1);
+	    imshow("inn", inn);
+	    waitKey(0);
+	    */
 
 	while(true)
 	{
 		//counter++;
-		//input = cv::imread("home/nvidia/Videos/Data/"+ seqense + "/" + ZeroPadNumber(counter, 6) + ".jpg", 1);
+		in = cv::imread("/home/nvidia/Videos/Data/"+ seqense + "/" + ZeroPadNumber(counter, 6) + ".jpg", 1);
 		cv::Mat input = in.clone();
 
 		auto start = std::chrono::high_resolution_clock::now();
 		std::vector<int> times = tracker.updateImpl(input, obj);
-
 		auto finish = std::chrono::high_resolution_clock::now();
 		int tm = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
 		putText(input, "FPS:" + std::to_string(1000/tm), cv::Point(50, 45), 1, 1, cv::Scalar(150, 235, 80), 1, LINE_8, false);
 		putText(input, "elapsed time all:" + std::to_string(tm) + "ms", cv::Point(50, 60), 1, 1, cv::Scalar(150, 235, 80), 1, LINE_8, false);
 
-
 		std::cout << "FPS:" + std::to_string(1000/tm) << "  \t elapsed time all:" + std::to_string(tm) + "ms ";
 		std::cout << std::endl;
 
-
 		rectangle(input, obj, Scalar(0, 0, 255), 2, 8, 0);
-		rectangle(input, obj, Scalar(0, 255, 255), 1, 8, 0);
-		//cv::imshow("input", input);
-		//char k = cv::waitKey(1);
-		/*
+		rectangle(input, pos[counter -1], Scalar(0, 255, 255), 1, 8, 0);
+		cv::imshow("input", input);
+		char k = cv::waitKey(1);
 		if (k == 27)
 			break;
-		*/
+
 	}
 
 	return 0;

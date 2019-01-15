@@ -412,7 +412,7 @@ std::vector<Mat> fourier_transform_features(const std::vector<Mat> &M)
 
 	//std::vector<std::thread> threads;
 
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for(size_t k = 0; k < M.size(); k++) {
 		//threads.push_back(std::thread(fourier_transform_mat, std::ref(M[k]), std::ref(out[k])));
 		fourier_transform_mat(M[k], out[k]);

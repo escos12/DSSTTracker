@@ -11,6 +11,7 @@
 
 #include "trackerCSRT.hpp"
 
+String seqense = "bike1";
 
 std::string ZeroPadNumber(int num, int pad)
 {
@@ -20,7 +21,7 @@ std::string ZeroPadNumber(int num, int pad)
 }
 
 std::vector<cv::Rect2d> parseCoorf(String filename)
-																{
+{
 	std::vector<cv::Rect2d> coordinates;
 	std::ifstream read(filename);
 
@@ -45,34 +46,24 @@ std::vector<cv::Rect2d> parseCoorf(String filename)
 	read.close();
 
 	return coordinates;
-
-																}
+}
 
 int main(int argc, char **argv)
 {
-	String seqense = "bike1";
-	std::vector<cv::Rect2d> pos =  parseCoorf("/home/nvidia/Videos/Data/" + seqense + ".txt");
+	std::vector<cv::Rect2d> pos =  parseCoorf("../DSSTTracker/"+ seqense + "/" + seqense + ".txt");
 	Rect2d obj = pos[0];
 	//Rect2d obj(703,361,64,96);
 	TrackerCSRT tracker;
 	int counter = 1;
-	cv::Mat in = cv::imread("/home/nvidia/Videos/Data/"+ seqense + "/" + ZeroPadNumber(counter, 6) + ".jpg", 1);
+	cv::Mat in = cv::imread("../DSSTTracker/"+ seqense + "/" + ZeroPadNumber(counter, 6) + ".jpg", 1);
 	//cv::Mat in(768, 1024, CV_8UC3, Scalar(255,0,0));
 	tracker.initImpl(in, obj);
 
-	//cv::imshow("input", input);
-	//cv::waitKey(0);
-
-	/*
-	    Mat inn = imread("/home/nvidia/Videos/Data/bike1/000001.jpg", 1);
-	    imshow("inn", inn);
-	    waitKey(0);
-	    */
 
 	while(true)
 	{
 		//counter++;
-		in = cv::imread("/home/nvidia/Videos/Data/"+ seqense + "/" + ZeroPadNumber(counter, 6) + ".jpg", 1);
+		//in = cv::imread("../DSSTTracker/"+ seqense + "/" + ZeroPadNumber(counter, 6) + ".jpg", 1);
 		cv::Mat input = in.clone();
 
 		auto start = std::chrono::high_resolution_clock::now();
@@ -92,7 +83,6 @@ int main(int argc, char **argv)
 		char k = cv::waitKey(1);
 		if (k == 27)
 			break;
-
 	}
 
 	return 0;

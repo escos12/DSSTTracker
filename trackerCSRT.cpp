@@ -56,13 +56,11 @@ void TrackerCSRT::update_csr_filter(const Mat &image, const Mat &mask)
 			cvFloor(current_scale_factor * template_size.height));
 	resize(patch, patch, rescaled_template_size, 0, 0, INTER_CUBIC);
 
-
 	auto start = std::chrono::high_resolution_clock::now();
 	std::vector<Mat> ftrs = get_features(patch, yf.size());
 	auto end = std::chrono::high_resolution_clock::now();
 	int tm = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 	std::cout << " features " << tm << "mks\t";
-
 
 	auto start1 = std::chrono::high_resolution_clock::now();
 	std::vector<Mat> Fftrs = fourier_transform_features(ftrs);
@@ -71,7 +69,6 @@ void TrackerCSRT::update_csr_filter(const Mat &image, const Mat &mask)
 	tm = std::chrono::duration_cast<std::chrono::microseconds>(end1 - start1).count();
 	std::cout << " fft " << tm << "mks\t";
 	//std::vector<Mat> Fftrs = fourier_transform_features(ftrs);
-
 
 	auto start2 = std::chrono::high_resolution_clock::now();
 	std::vector<Mat> new_csr_filter = create_csr_filter(Fftrs, yf, mask);
@@ -324,9 +321,7 @@ void TrackerCSRT::update_histograms(const Mat &image, const Rect &region)
 
 Point2f TrackerCSRT::estimate_new_position(const Mat &image)
 {
-
 	Mat resp = calculate_response(image, csr_filter);
-
 	double max_val;
 	Point max_loc;
 	minMaxLoc(resp, NULL, &max_val, NULL, &max_loc);
@@ -391,8 +386,8 @@ std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &featu
 		features[i] = features[i].mul(window);
 	}
 	return features;
-}
-*/
+}*/
+
 
 std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &feature_size)
 {
@@ -408,10 +403,11 @@ std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &featu
 	if (params.use_color_names) {
 		threads.push_back(std::thread(get_features_cn, patch, feature_size, std::ref(colorFeatures)));
 	}
-	if(params.use_rgb) {
-		threads.push_back(std::thread(get_features_rgb, patch, feature_size, std::ref(rgbFeatures)));
-	}
 
+	if(params.use_rgb) {
+		get_features_rgb(patch, feature_size, std::ref(rgbFeatures));
+		features.insert(features.end(), rgbFeatures.begin(), rgbFeatures.end());
+	}
 	if(params.use_gray) {
 		Mat gray_m;
 		cvtColor(patch, gray_m, COLOR_BGR2GRAY);
@@ -428,9 +424,7 @@ std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &featu
 	if (params.use_color_names) {
 		features.insert(features.end(), colorFeatures.begin(), colorFeatures.end());
 	}
-	if(params.use_rgb) {
-		features.insert(features.end(), rgbFeatures.begin(), rgbFeatures.end());
-	}
+
 
 
 	for (size_t i = 0; i < features.size(); ++i) {
@@ -438,6 +432,7 @@ std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &featu
 	}
 	return features;
 }
+
 
 bool TrackerCSRT::initImpl(const Mat& image_, const Rect2d& boundingBox)
 {
@@ -569,6 +564,7 @@ std::vector<int> TrackerCSRT::updateImpl(const Mat& image_, Rect2d& boundingBox)
 		image = image_;
 
 	object_center = estimate_new_position(image);
+
 	if (object_center.x < 0 && object_center.y < 0)
 		return times;
 
@@ -598,8 +594,10 @@ std::vector<int> TrackerCSRT::updateImpl(const Mat& image_, Rect2d& boundingBox)
 		}
 		auto end = std::chrono::high_resolution_clock::now();
 		int tm = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-		times.push_back(tm);
+		//times.push_back(tm);
 	}
+
+
 	{
 		auto start = std::chrono::high_resolution_clock::now();
 		update_csr_filter(image, filter_mask);
@@ -607,6 +605,7 @@ std::vector<int> TrackerCSRT::updateImpl(const Mat& image_, Rect2d& boundingBox)
 		int tm = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 		times.push_back(tm);
 	}
+
 	{
 		auto start = std::chrono::high_resolution_clock::now();
 		dsst.update(image, object_center);

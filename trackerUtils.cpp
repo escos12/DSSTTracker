@@ -2,6 +2,19 @@
 #include "trackerUtils.hpp"
 #include "featureColorName.h"
 
+bool setCpuToThread(std::thread &th, int core)
+{
+	cpu_set_t cpuset;
+	CPU_ZERO(&cpuset);
+	CPU_SET(core, &cpuset);
+	int rc = pthread_setaffinity_np(th.native_handle(),
+			sizeof(cpu_set_t), &cpuset);
+	if (rc != 0) {
+		return false;
+	}
+	return true;
+}
+
 Mat gaussian_shaped_labels(const float sigma, const int w, const int h)
 {
 	// create 2D Gaussian peak, convert to Fourier space and stores it into the yf

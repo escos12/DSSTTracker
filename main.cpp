@@ -21,7 +21,7 @@ std::string ZeroPadNumber(int num, int pad)
 }
 
 std::vector<cv::Rect2d> parseCoorf(String filename)
-{
+		{
 	std::vector<cv::Rect2d> coordinates;
 	std::ifstream read(filename);
 
@@ -46,7 +46,7 @@ std::vector<cv::Rect2d> parseCoorf(String filename)
 	read.close();
 
 	return coordinates;
-}
+		}
 
 int main(int argc, char **argv)
 {
@@ -59,31 +59,43 @@ int main(int argc, char **argv)
 	//cv::Mat in(768, 1024, CV_8UC3, Scalar(255,0,0));
 	tracker.initImpl(in, obj);
 
+	auto foo = [&]{
+		while(true)
+		{
+			//counter++;
+			//in = cv::imread("../DSSTTracker/"+ seqense + "/" + ZeroPadNumber(counter, 6) + ".jpg", 1);
+			cv::Mat input = in.clone();
 
-	while(true)
-	{
-		//counter++;
-		//in = cv::imread("../DSSTTracker/"+ seqense + "/" + ZeroPadNumber(counter, 6) + ".jpg", 1);
-		cv::Mat input = in.clone();
+			auto start = std::chrono::high_resolution_clock::now();
+			std::vector<int> times = tracker.updateImpl(input, obj);
+			auto finish = std::chrono::high_resolution_clock::now();
+			int tm = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-		auto start = std::chrono::high_resolution_clock::now();
-		std::vector<int> times = tracker.updateImpl(input, obj);
-		auto finish = std::chrono::high_resolution_clock::now();
-		int tm = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
+			putText(input, "FPS:" + std::to_string(1000/tm), cv::Point(50, 45), 1, 1, cv::Scalar(150, 235, 80), 1, LINE_8, false);
+			putText(input, "elapsed time all:" + std::to_string(tm) + "ms", cv::Point(50, 60), 1, 1, cv::Scalar(150, 235, 80), 1, LINE_8, false);
 
-		putText(input, "FPS:" + std::to_string(1000/tm), cv::Point(50, 45), 1, 1, cv::Scalar(150, 235, 80), 1, LINE_8, false);
-		putText(input, "elapsed time all:" + std::to_string(tm) + "ms", cv::Point(50, 60), 1, 1, cv::Scalar(150, 235, 80), 1, LINE_8, false);
+			std::cout << "FPS:" + std::to_string(1000/tm) << "  \t elapsed time all:" + std::to_string(tm) + "ms ";
+			std::cout << std::endl;
 
-		std::cout << "FPS:" + std::to_string(1000/tm) << "  \t elapsed time all:" + std::to_string(tm) + "ms ";
-		std::cout << std::endl;
+			rectangle(input, obj, Scalar(0, 0, 255), 2, 8, 0);
+			rectangle(input, pos[counter -1], Scalar(0, 255, 255), 1, 8, 0);
+			cv::imshow("input", input);
+			char k = cv::waitKey(1);
+			if (k == 27)
+				break;
+		}
+	};
 
-		rectangle(input, obj, Scalar(0, 0, 255), 2, 8, 0);
-		rectangle(input, pos[counter -1], Scalar(0, 255, 255), 1, 8, 0);
-		cv::imshow("input", input);
-		char k = cv::waitKey(1);
-		if (k == 27)
-			break;
-	}
+	std::thread th(foo);
+
+	cpu_set_t cpuset;
+	CPU_ZERO(&cpuset);
+	CPU_SET(1, &cpuset);
+	int rc = pthread_setaffinity_np(th.native_handle(),
+			sizeof(cpu_set_t), &cpuset);
+
+	th.join();
+
 
 	return 0;
 }

@@ -8,6 +8,8 @@
 
 using namespace cv;
 
+bool setCpuToThread(std::thread &th, int core);
+
 inline int modul(int a, int b)
 {
     // function calculates the module of two numbers and it takes into account also negative numbers

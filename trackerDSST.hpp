@@ -1,6 +1,6 @@
 
-#include "trackerCSRTSegmentation.hpp"
-#include "trackerCSRTScaleEstimation.hpp"
+#include "trackerDSSTSegmentation.hpp"
+#include "trackerDSSTScaleEstimation.hpp"
 #include "trackerUtils.hpp"
 
 #include "opencv2/core.hpp"
@@ -11,13 +11,13 @@
 
 using namespace cv;
 
-class TrackerCSRTParams
+class trackerDSSTParams
 {
 public:
     bool use_channel_weights = true;
     bool use_segmentation = true;
     bool use_hog = true;
-    bool use_color_names = false;
+    bool use_color_names = true;
     bool use_gray = true;
     bool use_rgb = true;
 
@@ -43,7 +43,7 @@ public:
     float psr_threshold = 0.035f;
 };
 
-class TrackerCSRT
+class trackerDSST
 {
 
 public:
@@ -65,7 +65,7 @@ protected:
 
 private:
 
-    TrackerCSRTParams params;
+    trackerDSSTParams params;
 
     bool check_mask_area(const Mat &mat, const double obj_area);
     float current_scale_factor;

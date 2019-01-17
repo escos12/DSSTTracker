@@ -9,7 +9,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
-#include "trackerCSRT.hpp"
+#include "trackerDSST.hpp"
 
 String seqense = "bike1";
 
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 	std::vector<cv::Rect2d> pos =  parseCoorf("../DSSTTracker/"+ seqense + "/" + seqense + ".txt");
 	Rect2d obj = pos[0];
 	//Rect2d obj(703,361,64,96);
-	TrackerCSRT tracker;
+	trackerDSST tracker;
 	int counter = 1;
 	cv::Mat in = cv::imread("../DSSTTracker/"+ seqense + "/" + ZeroPadNumber(counter, 6) + ".jpg", 1);
 	//cv::Mat in(768, 1024, CV_8UC3, Scalar(255,0,0));

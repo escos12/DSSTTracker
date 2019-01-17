@@ -1,14 +1,14 @@
-#include "trackerCSRT.hpp"
+#include "trackerDSST.hpp"
 
 
 /*
-void TrackerCSRT::setInitialMask(const Mat mask)
+void trackerDSST::setInitialMask(const Mat mask)
 {
     preset_mask = mask;
 }
  */
 
-bool TrackerCSRT::check_mask_area(const Mat &mat, const double obj_area)
+bool trackerDSST::check_mask_area(const Mat &mat, const double obj_area)
 {
 	double threshold = 0.05;
 	double mask_area= sum(mat)[0];
@@ -18,7 +18,7 @@ bool TrackerCSRT::check_mask_area(const Mat &mat, const double obj_area)
 	return true;
 }
 
-Mat TrackerCSRT::calculate_response(const Mat &image, const std::vector<Mat> filter)
+Mat trackerDSST::calculate_response(const Mat &image, const std::vector<Mat> filter)
 {
 	Mat patch = get_subwindow(image, object_center, cvFloor(current_scale_factor * template_size.width),
 			cvFloor(current_scale_factor * template_size.height));
@@ -50,7 +50,7 @@ Mat TrackerCSRT::calculate_response(const Mat &image, const std::vector<Mat> fil
 
 
 
-void TrackerCSRT::update_csr_filter(const Mat &image, const Mat &mask)
+void trackerDSST::update_csr_filter(const Mat &image, const Mat &mask)
 {
 	Mat patch = get_subwindow(image, object_center, cvFloor(current_scale_factor * template_size.width),
 			cvFloor(current_scale_factor * template_size.height));
@@ -60,21 +60,21 @@ void TrackerCSRT::update_csr_filter(const Mat &image, const Mat &mask)
 	std::vector<Mat> ftrs = get_features(patch, yf.size());
 	auto end = std::chrono::high_resolution_clock::now();
 	int tm = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-	std::cout << " features " << tm << "mks\t";
+	std::cout << " get_features " << tm << "mks\t";
 
 	auto start1 = std::chrono::high_resolution_clock::now();
 	std::vector<Mat> Fftrs = fourier_transform_features(ftrs);
 	//std::vector<Mat> ftf = fourier_transform_features_(ftrs);
 	auto end1 = std::chrono::high_resolution_clock::now();
 	tm = std::chrono::duration_cast<std::chrono::microseconds>(end1 - start1).count();
-	std::cout << " fft " << tm << "mks\t";
+	std::cout << " fourier_transform_features " << tm << "mks\t";
 	//std::vector<Mat> Fftrs = fourier_transform_features(ftrs);
 
 	auto start2 = std::chrono::high_resolution_clock::now();
 	std::vector<Mat> new_csr_filter = create_csr_filter(Fftrs, yf, mask);
 	auto end2 = std::chrono::high_resolution_clock::now();
 	tm = std::chrono::duration_cast<std::chrono::microseconds>(end2 - start2).count();
-	std::cout << " filter " << tm << "mks\t";
+	std::cout << " create_csr_filter " << tm << "mks\t";
 
 	//calculate per channel weights
 	if(params.use_channel_weights) {
@@ -174,7 +174,7 @@ private:
 
 
 
-std::vector<Mat> TrackerCSRT::create_csr_filter(
+std::vector<Mat> trackerDSST::create_csr_filter(
 		const std::vector<cv::Mat> img_features,
 		const cv::Mat Y,
 		const cv::Mat P)
@@ -189,7 +189,7 @@ std::vector<Mat> TrackerCSRT::create_csr_filter(
 	return result_filter;
 }
 
-Mat TrackerCSRT::get_location_prior(
+Mat trackerDSST::get_location_prior(
 		const Rect roi,
 		const Size2f target_size,
 		const Size img_sz)
@@ -225,7 +225,7 @@ Mat TrackerCSRT::get_location_prior(
 	return fg_prior;
 }
 
-Mat TrackerCSRT::segment_region(
+Mat trackerDSST::segment_region(
 		const Mat &image,
 		const Point2f &object_center,
 		const Size2f &template_size,
@@ -255,7 +255,7 @@ Mat TrackerCSRT::segment_region(
 	return mask;
 }
 
-void TrackerCSRT::extract_histograms(const Mat &image, cv::Rect region, Histogram &hf, Histogram &hb)
+void trackerDSST::extract_histograms(const Mat &image, cv::Rect region, Histogram &hf, Histogram &hb)
 {
 	// get coordinates of the region
 	int x1 = std::min(std::max(0, region.x), image.cols-1);
@@ -289,7 +289,7 @@ void TrackerCSRT::extract_histograms(const Mat &image, cv::Rect region, Histogra
 }
 
 
-void TrackerCSRT::update_histograms(const Mat &image, const Rect &region)
+void trackerDSST::update_histograms(const Mat &image, const Rect &region)
 {
 	// create temporary histograms
 	Histogram hf(image.channels(), params.histogram_bins);
@@ -319,7 +319,7 @@ void TrackerCSRT::update_histograms(const Mat &image, const Rect &region)
 	std::vector<double>().swap(hb_vect);
 }
 
-Point2f TrackerCSRT::estimate_new_position(const Mat &image)
+Point2f trackerDSST::estimate_new_position(const Mat &image)
 {
 	Mat resp = calculate_response(image, csr_filter);
 	double max_val;
@@ -354,7 +354,7 @@ Point2f TrackerCSRT::estimate_new_position(const Mat &image)
 }
 
 /*
-std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &feature_size)
+std::vector<Mat> trackerDSST::get_features(const Mat &patch, const Size2i &feature_size)
 {
 	std::vector<Mat> features;
 	if (params.use_hog) {
@@ -386,28 +386,30 @@ std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &featu
 		features[i] = features[i].mul(window);
 	}
 	return features;
-}*/
+}
 
-
-std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &feature_size)
+*/
+std::vector<Mat> trackerDSST::get_features(const Mat &patch, const Size2i &feature_size)
 {
 	std::vector<Mat> features;
 
 	std::vector<std::thread> threads;
 	std::vector<Mat> hogFeatures, colorFeatures, rgbFeatures;
 
-
 	if (params.use_hog) {
 		threads.push_back(std::thread(get_features_hog, patch, cell_size, std::ref(hogFeatures)));
+		setCpuToThread(threads[0], 1);
 	}
 	if (params.use_color_names) {
 		threads.push_back(std::thread(get_features_cn, patch, feature_size, std::ref(colorFeatures)));
+		setCpuToThread(threads[1], 2);
 	}
 
 	if(params.use_rgb) {
 		get_features_rgb(patch, feature_size, std::ref(rgbFeatures));
 		features.insert(features.end(), rgbFeatures.begin(), rgbFeatures.end());
 	}
+
 	if(params.use_gray) {
 		Mat gray_m;
 		cvtColor(patch, gray_m, COLOR_BGR2GRAY);
@@ -425,8 +427,6 @@ std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &featu
 		features.insert(features.end(), colorFeatures.begin(), colorFeatures.end());
 	}
 
-
-
 	for (size_t i = 0; i < features.size(); ++i) {
 		features[i] = features[i].mul(window);
 	}
@@ -434,7 +434,7 @@ std::vector<Mat> TrackerCSRT::get_features(const Mat &patch, const Size2i &featu
 }
 
 
-bool TrackerCSRT::initImpl(const Mat& image_, const Rect2d& boundingBox)
+bool trackerDSST::initImpl(const Mat& image_, const Rect2d& boundingBox)
 {
 	Mat image;
 	if(image_.channels() == 1)    //treat gray image as color image
@@ -549,12 +549,12 @@ bool TrackerCSRT::initImpl(const Mat& image_, const Rect2d& boundingBox)
 	dsst = DSST(image, bounding_box, template_size, params.number_of_scales, params.scale_step,
 			params.scale_model_max_area, params.scale_sigma_factor, params.scale_lr);
 	/*
-    model = Ptr<TrackerCSRTModel>(new TrackerCSRTModel(params));
+    model = Ptr<trackerDSSTModel>(new trackerDSSTModel(params));
 	 */
 	isInit = true;
 }
 
-std::vector<int> TrackerCSRT::updateImpl(const Mat& image_, Rect2d& boundingBox)
+std::vector<int> trackerDSST::updateImpl(const Mat& image_, Rect2d& boundingBox)
 {
 	std::vector<int> times;
 	Mat image;

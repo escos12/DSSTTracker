@@ -3,7 +3,7 @@
 // of this distribution and at http://opencv.org/license.html.
 
 
-#include "trackerCSRTSegmentation.hpp"
+#include "trackerDSSTSegmentation.hpp"
 
 //-------------------- HISTOGRAM CLASS --------------------
 Histogram::Histogram(int numDimensions, int numBinsPerDimension)
